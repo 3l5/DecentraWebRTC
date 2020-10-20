@@ -1,5 +1,5 @@
 # DecentraWebRTC
-# Zool's creation, for a C.E.P
+# Zool's creation :)
 ## Based on WebRTC
 ---
 
