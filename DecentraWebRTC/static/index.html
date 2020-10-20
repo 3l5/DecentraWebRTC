@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+  </head>
+  <body style="padding:60px;">
+    <div id="status" class="" style="height:100px;overflow-y:scroll" >
+
+    </div>
+    <div id="messages" class="well" style="height:200px;overflow-y:scroll" ></div>
+    <div class="row">
+      <div class="col-lg-6 col-md-6">
+      <div class="input-group">
+        <input type="text" class="form-control" id="msg" placeholder="Send Messages...">
+        <span class="input-group-btn">
+          <button class="btn btn-primary" id="btn" type="button">Send!</button>
+        </span>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-6"></div>
+  </div>
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="bundle.js"></script>
+    <script>
+      var grtcID = GRTC.queryParameter(window.location.search);
+      if (grtcID.length == 0) {
+        var grtcID = GRTC.uuid();
+        window.history.pushState('', '', '?collaborate=' + grtcID);
+        var grtc = new GRTC(grtcID, 'http://localhost' + '/wp-json/collaborate');
+      } else {
+        var grtc = new GRTC(grtcID, window.location.origin);
+      }
+
+      grtc.on('peerSignal', function(){
+        console.log('Signal to peer done');
+      });
+
+      grtc.on('peerConnected', function(){
+        console.log('Connection established between peers');
+      });
+
+      grtc.on('peerData', function(d){
+        $("#messages").append('<p>'+ JSON.stringify(d) + '</p>');
+      });
+
+      grtc.on('peerClosed', function(p) {
+        console.log('Peer left');
+      });
+
+      $("#btn").click(function(){
+        grtc.send($("#msg").val());
+        $("#messages").append('<p>'+ $("#msg").val() + '</p>');
+        $("#msg").val("");
+      });
+    </script>
+  </body>
+</html>
